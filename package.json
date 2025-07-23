@@ -13,13 +13,20 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "preact": "10.25.3"
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "dayjs": "1.11.13",
+    "lucide-react": "0.525.0",
+    "preact": "10.25.3",
+    "tailwind-merge": "3.3.1",
+    "zod": "4.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
     "@eslint/json": "^0.13.1",
     "@preact/preset-vite": "^2.9.3",
     "@tailwindcss/vite": "^4.1.11",
+    "@types/node": "^24.1.0",
     "eslint": "^9.31.0",
     "eslint-config-preact": "^2.0.0",
     "eslint-config-prettier": "^10.1.8",
@@ -27,6 +34,7 @@
     "globals": "^16.3.0",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.1.11",
+    "tw-animate-css": "^1.3.5",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0",
     "vite": "^6.0.4"

@@ -4,10 +4,10 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import preact from 'eslint-config-preact';
 import json from '@eslint/json';
+import { globalIgnores } from 'eslint/config';
 
 export default tseslint.config([
   eslint.configs.recommended,
-  tseslint.configs.recommended,
   prettier,
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
@@ -16,6 +16,10 @@ export default tseslint.config([
   {
     files: ['**/*.{jsx,tsx}'],
     extends: [...preact],
+  },
+  {
+    files: ['**/*.{tsx,ts}'],
+    extends: [...tseslint.configs.recommended],
   },
 
   {
@@ -29,4 +33,5 @@ export default tseslint.config([
       'no-irregular-whitespace': 'off',
     },
   },
+  globalIgnores(['node_modules', 'dist']),
 ]);
