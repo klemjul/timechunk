@@ -31,7 +31,7 @@ export function TimeChunkUnitBox({
   }, [selectedUnits, unit.index]);
 
   return (
-    <button
+    <div
       className={`w-6 h-6 rounded border-2 flex items-center justify-center text-xs font-medium hover:scale-110 transition-transform cursor-pointer ${
         isUnitSelected
           ? 'border-blue-500 ring-2 ring-blue-300 '
@@ -41,6 +41,6 @@ export function TimeChunkUnitBox({
       }`}
       style={{ backgroundColor: timeframe?.color || '#f3f4f6' }}
       onClick={onClick}
-    ></button>
+    ></div>
   );
 }

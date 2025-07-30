@@ -56,7 +56,7 @@ export function TimeChunkViewer({
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center min-h-screen p-4 pb-30">
+      <div className="flex flex-col items-center justify-center min-h-screen p-4 pb-100 pt-20">
         <div className="mb-6">
           <TextH2 className="text-center border-b-0 pb-0">
             {timeChunk.name} in {getUnitLabel(timeChunk.unit)}
