@@ -52,6 +52,8 @@
 
 body {
 	margin: 0;
+	/* FIXME: added because Drawer seem to set pointer-events: none even with modal = false  */
+	pointer-events: auto !important;
 }
 
 @theme inline {
