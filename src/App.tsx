@@ -7,7 +7,9 @@ function App() {
   const [timeChunk, setTimeChunk] = useState<TimeChunk | null>(null);
 
   if (timeChunk) {
-    return <TimeChunkViewer timeChunk={timeChunk} />;
+    return (
+      <TimeChunkViewer timeChunk={timeChunk} onTimeChunkUpdate={setTimeChunk} />
+    );
   }
 
   return (

@@ -7,6 +7,7 @@ import { TimeChunkViewerDrawer } from './TimeChunkViewerDrawer';
 
 interface TimeChunkViewerProps {
   timeChunk: TimeChunk;
+  onTimeChunkUpdate?: (timeChunk: TimeChunk) => void;
 }
 
 export type SelectedUnits =
@@ -14,7 +15,10 @@ export type SelectedUnits =
   | [TimeChunkUnit, TimeChunkUnit]
   | [];
 
-export function TimeChunkViewer({ timeChunk }: TimeChunkViewerProps) {
+export function TimeChunkViewer({
+  timeChunk,
+  onTimeChunkUpdate,
+}: TimeChunkViewerProps) {
   const [selectedUnits, setSelectedUnits] = useState<SelectedUnits>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -83,6 +87,7 @@ export function TimeChunkViewer({ timeChunk }: TimeChunkViewerProps) {
         selectedUnits={selectedUnits}
         isDrawerOpen={isDrawerOpen}
         onDrawerOpenChange={handleDrawerOpenChange}
+        onTimeChunkUpdate={onTimeChunkUpdate}
       />
     </>
   );
