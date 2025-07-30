@@ -1,27 +1,28 @@
-import eslint from '@eslint/js';
 import prettier from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import preact from 'eslint-config-preact';
+import js from '@eslint/js';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
 import json from '@eslint/json';
 import { globalIgnores } from 'eslint/config';
 
 export default tseslint.config([
-  eslint.configs.recommended,
+  globalIgnores(['node_modules', 'dist']),
   prettier,
   {
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    languageOptions: { globals: globals.browser },
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      js.configs.recommended,
+      tseslint.configs.recommended,
+      reactHooks.configs['recommended-latest'],
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+    },
   },
-  {
-    files: ['**/*.{jsx,tsx}'],
-    extends: [...preact],
-  },
-  {
-    files: ['**/*.{tsx,ts}'],
-    extends: [...tseslint.configs.recommended],
-  },
-
   {
     files: ['**/*.json'],
     language: 'json/json',
@@ -33,5 +34,4 @@ export default tseslint.config([
       'no-irregular-whitespace': 'off',
     },
   },
-  globalIgnores(['node_modules', 'dist']),
 ]);
