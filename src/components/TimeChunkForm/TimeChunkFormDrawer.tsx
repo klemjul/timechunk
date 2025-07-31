@@ -8,6 +8,7 @@ import {
   DrawerTitle,
   DrawerFooter,
   DrawerDescription,
+  DrawerClose,
 } from '../ui/drawer';
 import { useState } from 'react';
 import { TextLarge } from '../ui/typography';
@@ -16,13 +17,11 @@ import { TimeChunkFormStep2, type Step2Data } from './TimeChunkFormStep2';
 
 interface TimeChunkFormProps {
   onComplete: (timeChunk: TimeChunk) => void;
-  onCancel?: () => void;
   title?: string;
 }
 
 export function TimeChunkFormDrawer({
   onComplete,
-  onCancel,
   title = 'Create Time Chunk',
 }: TimeChunkFormProps) {
   const [currentStep, setCurrentStep] = useState<1 | 2>(1);
@@ -94,24 +93,34 @@ export function TimeChunkFormDrawer({
         </div>
 
         <DrawerFooter>
-          <div className="flex justify-between w-full">
+          <div className="flex justify-between w-full gap-2">
             {currentStep === 1 ? (
               <>
-                {onCancel && (
-                  <Button type="button" onClick={onCancel} variant="outline">
+                <DrawerClose asChild>
+                  <Button type="button" variant="outline" className="flex-1">
                     Cancel
                   </Button>
-                )}
-                <Button type="submit" form="step1-form" className="ml-auto">
+                </DrawerClose>
+                <Button type="submit" form="step1-form" className="flex-2">
                   Next
                 </Button>
               </>
             ) : (
               <>
-                <Button type="button" onClick={handleBack} variant="outline">
+                <Button
+                  type="button"
+                  onClick={handleBack}
+                  variant="outline"
+                  className="flex-1"
+                >
                   Back
                 </Button>
-                <Button type="submit" form="step2-form" variant="default">
+                <Button
+                  type="submit"
+                  form="step2-form"
+                  variant="default"
+                  className="flex-2"
+                >
                   Create Time Chunk
                 </Button>
               </>

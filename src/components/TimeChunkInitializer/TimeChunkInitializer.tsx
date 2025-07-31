@@ -5,12 +5,10 @@ import { TimeChunkFormDrawer } from '../TimeChunkForm/TimeChunkFormDrawer';
 
 interface TimeChunkInitializerProps {
   onComplete: (timeChunk: TimeChunk) => void;
-  onCancel?: () => void;
 }
 
 export function TimeChunkInitializer({
   onComplete,
-  onCancel,
 }: TimeChunkInitializerProps) {
   const handleOpenExisting = () => {
     // TODO: Implement opening existing time chunk
@@ -28,7 +26,6 @@ export function TimeChunkInitializer({
           <TimeChunkFormDrawer
             title="Create a new Time Chunk"
             onComplete={onComplete}
-            onCancel={onCancel}
           />
         </Drawer>
 

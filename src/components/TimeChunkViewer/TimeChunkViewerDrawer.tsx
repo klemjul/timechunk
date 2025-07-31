@@ -1,4 +1,3 @@
-import { X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -13,6 +12,7 @@ import {
   DrawerTitle,
   DrawerDescription,
   DrawerClose,
+  DrawerFooter,
 } from '@/components/ui/drawer';
 import {
   Form,
@@ -113,79 +113,91 @@ export function TimeChunkViewerDrawer({
   return (
     <Drawer open={isDrawerOpen} onOpenChange={onDrawerOpenChange} modal={false}>
       <DrawerContent>
-        <DrawerHeader className="relative">
-          <DrawerClose asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100"
-            >
-              <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
-            </Button>
-          </DrawerClose>
-
-          <DrawerTitle>
-            {(() => {
-              const dates = getSelectedDates();
-              if (dates.length === 0) return '';
-              if (dates.length === 1) {
-                return formatDateForUnit(dates[0], timeChunk.unit);
-              }
-              return `${formatDateForUnit(dates[0], timeChunk.unit)} - ${formatDateForUnit(dates[1], timeChunk.unit)}`;
-            })()}
-          </DrawerTitle>
-          <DrawerDescription>
-            {selectedUnits.length === 2
-              ? 'Create a timeframe for this date range'
-              : ''}
-          </DrawerDescription>
-        </DrawerHeader>
-
-        {selectedUnits.length === 2 && (
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleCreateTimeframe)}
-              className="px-4 pb-4"
-            >
-              <div className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Timeframe Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter timeframe name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="color"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Color</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="color"
-                          className="h-10 w-full"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit" className="w-full">
-                  Create Timeframe
-                </Button>
-              </div>
-            </form>
-          </Form>
-        )}
+        <div className="mx-auto w-full max-w-sm">
+          <DrawerHeader>
+            <DrawerTitle>
+              {(() => {
+                const dates = getSelectedDates();
+                if (dates.length === 0) return '';
+                if (dates.length === 1) {
+                  return formatDateForUnit(dates[0], timeChunk.unit);
+                }
+                return `${formatDateForUnit(dates[0], timeChunk.unit)} - ${formatDateForUnit(dates[1], timeChunk.unit)}`;
+              })()}
+            </DrawerTitle>
+            <DrawerDescription>
+              {selectedUnits.length === 2
+                ? 'Create a timeframe for this date range'
+                : ''}
+            </DrawerDescription>
+          </DrawerHeader>
+          {selectedUnits.length === 2 && (
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(handleCreateTimeframe)}
+                className="px-4 pb-4"
+                id="timeframe-form"
+              >
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Timeframe Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter timeframe name"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="color"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Color</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="color"
+                            className="h-10 w-full"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </form>
+            </Form>
+          )}
+          <DrawerFooter>
+            <div className="flex justify-between w-full gap-2">
+              <>
+                <DrawerClose asChild>
+                  <Button type="button" variant="outline" className="flex-1">
+                    Close
+                  </Button>
+                </DrawerClose>
+                {selectedUnits.length === 2 && (
+                  <Button
+                    type="submit"
+                    form="timeframe-form"
+                    variant="default"
+                    className="flex-2"
+                  >
+                    Create Time Chunk
+                  </Button>
+                )}
+              </>
+            </div>
+          </DrawerFooter>
+        </div>
       </DrawerContent>
     </Drawer>
   );
