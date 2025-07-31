@@ -22,8 +22,11 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import type { SelectedUnits } from './TimeChunkViewer';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import {
+  timeframesOverlapping,
+  type SelectedTimeChunkUnits,
+} from '@/lib/timeframe';
 
 const timeframeSchema = z.object({
   name: z
@@ -38,7 +41,7 @@ type TimeframeFormData = z.infer<typeof timeframeSchema>;
 
 interface TimeChunkViewerDrawerProps {
   timeChunk: TimeChunk;
-  selectedUnits: SelectedUnits;
+  selectedUnits: SelectedTimeChunkUnits;
   isDrawerOpen: boolean;
   onDrawerOpenChange: (open: boolean) => void;
   onTimeChunkUpdate?: (timeChunk: TimeChunk) => void;
@@ -51,6 +54,21 @@ export function TimeChunkViewerDrawer({
   onDrawerOpenChange,
   onTimeChunkUpdate,
 }: TimeChunkViewerDrawerProps) {
+  const overlappingTimeframes = useMemo(() => {
+    const [start, end] = selectedUnits;
+    if (start && end) {
+      return timeframesOverlapping(
+        [start, end],
+        Object.values(timeChunk.timeframes)
+      );
+    }
+    return [];
+  }, [selectedUnits, timeChunk.timeframes]);
+
+  const shouldDisplayForm = useMemo(() => {
+    return selectedUnits.length == 2 && overlappingTimeframes.length == 0;
+  }, [selectedUnits, overlappingTimeframes]);
+
   const form = useForm<TimeframeFormData>({
     resolver: zodResolver(timeframeSchema),
     defaultValues: {
@@ -81,20 +99,21 @@ export function TimeChunkViewerDrawer({
       return;
     }
 
-    const timeframeId = `timeframe-${Date.now()}`;
     const [startUnit, endUnit] = selectedUnits;
 
     const updatedTimeframes = {
       ...timeChunk.timeframes,
-      [timeframeId]: {
+      [data.name]: {
         name: data.name,
         color: data.color,
+        startIndex: startUnit.index,
+        endIndex: endUnit.index,
       },
     };
 
     const updatedUnits = timeChunk.units.map((unit) => {
       if (unit.index >= startUnit.index && unit.index <= endUnit.index) {
-        return { ...unit, timeframe: timeframeId };
+        return { ...unit, timeframe: data.name };
       }
       return unit;
     });
@@ -126,12 +145,12 @@ export function TimeChunkViewerDrawer({
               })()}
             </DrawerTitle>
             <DrawerDescription>
-              {selectedUnits.length === 2
+              {shouldDisplayForm
                 ? 'Create a timeframe for this date range'
                 : ''}
             </DrawerDescription>
           </DrawerHeader>
-          {selectedUnits.length === 2 && (
+          {shouldDisplayForm && (
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(handleCreateTimeframe)}
@@ -184,7 +203,7 @@ export function TimeChunkViewerDrawer({
                     Close
                   </Button>
                 </DrawerClose>
-                {selectedUnits.length === 2 && (
+                {shouldDisplayForm && (
                   <Button
                     type="submit"
                     form="timeframe-form"

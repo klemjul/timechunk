@@ -10,6 +10,8 @@ const dateSchema = z
 export const TimeFrameSchema = z.object({
   name: z.string(),
   color: z.string(),
+  startIndex: z.number(),
+  endIndex: z.number(),
 });
 
 export const TimeChunkUnitSchema = z.object({

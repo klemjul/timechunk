@@ -1,25 +1,27 @@
 import { useEffect, useState } from 'react';
-import type { TimeChunk, TimeChunkUnit } from '@/models';
+import type { TimeChunk, TimeChunkUnit, TimeFrame } from '@/models';
 import { TextH2, TextMuted } from '@/components/ui/typography';
 import { getUnitLabel } from '@/lib/time';
 import { TimeChunkUnitBox } from './TimeChunkUnitBox';
 import { TimeChunkViewerDrawer } from './TimeChunkViewerDrawer';
+import {
+  findUnitsInTimeFrame,
+  isUnitSelected,
+  type SelectedTimeChunkUnits,
+} from '@/lib/timeframe';
 
 interface TimeChunkViewerProps {
   timeChunk: TimeChunk;
   onTimeChunkUpdate?: (timeChunk: TimeChunk) => void;
 }
 
-export type SelectedUnits =
-  | [TimeChunkUnit]
-  | [TimeChunkUnit, TimeChunkUnit]
-  | [];
-
 export function TimeChunkViewer({
   timeChunk,
   onTimeChunkUpdate,
 }: TimeChunkViewerProps) {
-  const [selectedUnits, setSelectedUnits] = useState<SelectedUnits>([]);
+  const [selectedUnits, setSelectedUnits] = useState<SelectedTimeChunkUnits>(
+    []
+  );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
@@ -31,11 +33,23 @@ export function TimeChunkViewer({
   }, [selectedUnits]);
 
   const handleUnitClick = (unit: TimeChunkUnit) => {
-    setSelectedUnits((current): SelectedUnits => {
-      const isSelected = current.some((u) => u.index === unit.index);
+    setSelectedUnits((current): SelectedTimeChunkUnits => {
+      const isSelected = isUnitSelected(current, unit);
 
       if (isSelected) {
         return [];
+      }
+
+      const unitTimeFrame = timeChunk.timeframes[unit.timeframe];
+      if (unitTimeFrame) {
+        const unitsInTimeframe = findUnitsInTimeFrame(unitTimeFrame, timeChunk);
+        if (unitsInTimeframe.length > 2) {
+          return [
+            unitsInTimeframe.at(0),
+            unitsInTimeframe.at(-1),
+            unitTimeFrame,
+          ] as [TimeChunkUnit, TimeChunkUnit, TimeFrame];
+        }
       }
 
       if (current.length === 1) {
