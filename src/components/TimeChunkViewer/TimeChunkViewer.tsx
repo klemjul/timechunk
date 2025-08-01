@@ -23,6 +23,20 @@ export function TimeChunkViewer({
     []
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [hoveredUnit, setHoveredUnit] = useState<TimeChunkUnit | null>(null);
+
+  const getPreviewUnits = (): TimeChunkUnit[] => {
+    if (selectedUnits.length === 1 && hoveredUnit) {
+      const firstSelected = selectedUnits[0];
+      const minIndex = Math.min(firstSelected.index, hoveredUnit.index);
+      const maxIndex = Math.max(firstSelected.index, hoveredUnit.index);
+
+      return timeChunk.units.filter(
+        (unit) => unit.index >= minIndex && unit.index <= maxIndex
+      );
+    }
+    return [];
+  };
 
   useEffect(() => {
     if (selectedUnits.length === 0) {
@@ -88,7 +102,10 @@ export function TimeChunkViewer({
                 selectedUnits={selectedUnits}
                 timeframes={timeChunk.timeframes}
                 timeChunk={timeChunk}
+                previewUnits={getPreviewUnits()}
                 onClick={() => handleUnitClick(unit)}
+                onMouseEnter={() => setHoveredUnit(unit)}
+                onMouseLeave={() => setHoveredUnit(null)}
               />
             ))}
           </div>
