@@ -76,7 +76,7 @@ export function TimeChunkFormStep2({
           name="chunkCount"
           render={({ field }) => (
             <FormItem className="mb-4">
-              <FormLabel>
+              <FormLabel id="chunkCount">
                 <TextSmall className="w-3/4">
                   Number of {getUnitLabel(unit)}:{' '}
                 </TextSmall>
@@ -85,7 +85,9 @@ export function TimeChunkFormStep2({
                   {...field}
                   type="number"
                   value={field.value}
-                  onChange={(value) => field.onChange(value)}
+                  onChange={(e) =>
+                    field.onChange(parseInt(e.target.value, 10) || 1)
+                  }
                 />
               </FormLabel>
               <FormControl>
