@@ -1,9 +1,5 @@
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import type { TimeChunk, TimeChunkUnit } from '@/models';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { addUnitToDate, formatDateForUnit } from '@/lib/time';
 import {
   Drawer,
@@ -14,30 +10,12 @@ import {
   DrawerClose,
   DrawerFooter,
 } from '@/components/ui/drawer';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
+import { TimeFrameForm, type TimeframeFormData } from './TimeFrameForm';
 import {
   timeframesOverlapping,
   type SelectedTimeChunkUnits,
 } from '@/lib/timeframe';
-
-const timeframeSchema = z.object({
-  name: z
-    .string()
-    .min(1, 'Timeframe name is required')
-    .max(50, 'Name must be less than 50 characters')
-    .trim(),
-  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Please select a valid color'),
-});
-
-type TimeframeFormData = z.infer<typeof timeframeSchema>;
 
 interface TimeChunkViewerDrawerProps {
   timeChunk: TimeChunk;
@@ -68,18 +46,6 @@ export function TimeChunkViewerDrawer({
   const shouldDisplayForm = useMemo(() => {
     return selectedUnits.length == 2 && overlappingTimeframes.length == 0;
   }, [selectedUnits, overlappingTimeframes]);
-
-  const form = useForm<TimeframeFormData>({
-    resolver: zodResolver(timeframeSchema),
-    defaultValues: {
-      name: '',
-      color: '#3b82f6',
-    },
-  });
-
-  useEffect(() => {
-    form.reset();
-  }, [selectedUnits, form]);
 
   const getUnitDate = (unit: TimeChunkUnit) => {
     const unitDate = addUnitToDate(timeChunk.unit, timeChunk.start, unit.index);
@@ -125,7 +91,6 @@ export function TimeChunkViewerDrawer({
     };
 
     onTimeChunkUpdate(updatedTimeChunk);
-    form.reset();
     onDrawerOpenChange(false);
   };
 
@@ -151,49 +116,11 @@ export function TimeChunkViewerDrawer({
             </DrawerDescription>
           </DrawerHeader>
           {shouldDisplayForm && (
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(handleCreateTimeframe)}
-                className="px-4 pb-4"
-                id="timeframe-form"
-              >
-                <div className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Timeframe Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter timeframe name"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="color"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Color</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="color"
-                            className="h-10 w-full"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </form>
-            </Form>
+            <TimeFrameForm
+              onSubmit={handleCreateTimeframe}
+              formId="timeframe-form"
+              resetTrigger={selectedUnits}
+            />
           )}
           <DrawerFooter>
             <div className="flex justify-between w-full gap-2">
