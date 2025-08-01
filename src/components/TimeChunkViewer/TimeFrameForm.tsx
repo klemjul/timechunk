@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useEffect } from 'react';
+import type { TimeChunk } from '@/models';
 
 const timeframeSchema = z.object({
   name: z
@@ -25,17 +26,32 @@ export type TimeframeFormData = z.infer<typeof timeframeSchema>;
 
 interface TimeFrameFormProps {
   onSubmit: (data: TimeframeFormData) => void;
+  timeChunk: TimeChunk;
   formId: string;
   resetTrigger?: unknown;
 }
 
 export function TimeFrameForm({
   onSubmit,
+  timeChunk,
   formId,
   resetTrigger,
 }: TimeFrameFormProps) {
+  const timeframeSchemaWithValidation = timeframeSchema.refine(
+    (data) => {
+      const existingNames = Object.keys(timeChunk.timeframes).map((name) =>
+        name.toLowerCase().trim()
+      );
+      return !existingNames.includes(data.name.toLowerCase().trim());
+    },
+    {
+      message: 'A timeframe with this name already exists',
+      path: ['name'],
+    }
+  );
+
   const form = useForm<TimeframeFormData>({
-    resolver: zodResolver(timeframeSchema),
+    resolver: zodResolver(timeframeSchemaWithValidation),
     defaultValues: {
       name: '',
       color: '#3b82f6',

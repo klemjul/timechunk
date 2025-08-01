@@ -118,6 +118,7 @@ export function TimeChunkViewerDrawer({
           {shouldDisplayForm && (
             <TimeFrameForm
               onSubmit={handleCreateTimeframe}
+              timeChunk={timeChunk}
               formId="timeframe-form"
               resetTrigger={selectedUnits}
             />
