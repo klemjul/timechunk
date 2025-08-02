@@ -93,7 +93,7 @@ interface TextSmallProps {
 
 export function TextSmall({ children, className }: TextSmallProps) {
   return (
-    <small className={cn('text-sm leading-none font-medium', className)}>
+    <small className={cn('text-xs leading-none font-medium', className)}>
       {children}
     </small>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import type { TimeChunk, TimeChunkUnit, TimeFrame } from '@/models';
-import { TextH2, TextMuted } from '@/components/ui/typography';
+import { TextH2, TextMuted, TextSmall } from '@/components/ui/typography';
 import {
   getUnitLabel,
   getUnitByLine,
@@ -177,15 +177,16 @@ export function TimeChunkViewer({
   return (
     <>
       <div className="flex flex-col items-center justify-center min-h-screen p-4 pb-100 pt-20">
-        <div className="mb-6">
+        <div className="mb-10">
           <TextH2 className="text-center border-b-0 pb-0">
             {timeChunk.name} in {getUnitLabel(timeChunk.unit)}
           </TextH2>
         </div>
 
         <div className="flex flex-col items-center gap-4 w-full">
-          <TextMuted>{format(timeChunk.start, 'MMM d, yyyy')}</TextMuted>
-
+          <TextMuted className="mb-5">
+            {format(timeChunk.start, 'MMM d, yyyy')}
+          </TextMuted>
           <div className="flex items-start gap-4">
             <div
               className="flex flex-col text-xs text-muted-foreground  text-right"
@@ -198,37 +199,55 @@ export function TimeChunkViewer({
                     key={lineIndex}
                     className="h-4 flex items-center justify-end"
                   >
-                    {yearMarker && (
-                      <span className="font-medium">{yearMarker}</span>
-                    )}
+                    {yearMarker && <TextSmall>{yearMarker}</TextSmall>}
                   </div>
                 );
               })}
             </div>
 
-            <div
-              ref={containerRef}
-              className="grid gap-1"
-              style={{
-                gridTemplateColumns: `repeat(${unitsPerLine}, minmax(0, max-content))`,
-                justifyContent: 'center',
-              }}
-            >
-              {timeChunk.units.map((unit) => (
-                <TimeChunkUnitBox
-                  key={unit.index}
-                  unit={unit}
-                  selectedUnits={selectedUnits}
-                  timeframes={timeChunk.timeframes}
-                  timeChunk={timeChunk}
-                  previewUnits={getPreviewUnits()}
-                  onPointerDown={() => handlePointerDown(unit)}
-                  onPointerUp={handlePointerUp}
-                />
-              ))}
+            <div className="relative">
+              <div
+                className="absolute -top-6 left-0 grid gap-1 text-xs text-muted-foreground"
+                style={{
+                  gridTemplateColumns: `repeat(${unitsPerLine}, minmax(0, max-content))`,
+                  justifyContent: 'center',
+                }}
+              >
+                {Array.from({ length: unitsPerLine }, (_, colIndex) => (
+                  <div
+                    key={colIndex}
+                    className="w-4 h-4 flex items-center justify-center"
+                  >
+                    {(colIndex + 1) % 5 === 0 && (
+                      <TextSmall>{colIndex + 1}</TextSmall>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div
+                ref={containerRef}
+                className="grid gap-1"
+                style={{
+                  gridTemplateColumns: `repeat(${unitsPerLine}, minmax(0, max-content))`,
+                  justifyContent: 'center',
+                }}
+              >
+                {timeChunk.units.map((unit) => (
+                  <TimeChunkUnitBox
+                    key={unit.index}
+                    unit={unit}
+                    selectedUnits={selectedUnits}
+                    timeframes={timeChunk.timeframes}
+                    timeChunk={timeChunk}
+                    previewUnits={getPreviewUnits()}
+                    onPointerDown={() => handlePointerDown(unit)}
+                    onPointerUp={handlePointerUp}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-
           <TextMuted>{format(timeChunk.end, 'MMM d, yyyy')}</TextMuted>
         </div>
       </div>
