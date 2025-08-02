@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import type { TimeChunk, TimeChunkUnit, TimeFrame } from '@/models';
 import { TextH2, TextMuted } from '@/components/ui/typography';
 import { getUnitLabel } from '@/lib/time';
+import { format } from 'date-fns';
 import { TimeChunkUnitBox } from './TimeChunkUnitBox';
 import { TimeChunkViewerDrawer } from './TimeChunkViewerDrawer';
 import {
@@ -140,7 +141,7 @@ export function TimeChunkViewer({
         </div>
 
         <div className="flex flex-col items-center gap-4 w-full max-w-4xl mx-auto px-2">
-          <TextMuted>{timeChunk.start.format('MMM D, YYYY')}</TextMuted>
+          <TextMuted>{format(timeChunk.start, 'MMM d, yyyy')}</TextMuted>
 
           <div
             ref={containerRef}
@@ -160,7 +161,7 @@ export function TimeChunkViewer({
             ))}
           </div>
 
-          <TextMuted>{timeChunk.end.format('MMM D, YYYY')}</TextMuted>
+          <TextMuted>{format(timeChunk.end, 'MMM d, yyyy')}</TextMuted>
         </div>
       </div>
       <TimeChunkViewerDrawer

@@ -1,6 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { format } from 'date-fns';
-import type dayjs from 'dayjs';
+import { addDays, addMonths, addWeeks, addYears, format } from 'date-fns';
 
 export enum TimeUnit {
   MONTH = 'month',
@@ -89,20 +88,20 @@ export const formatDateForUnit = (date: Date, unit: TimeUnit): string => {
 
 export const addUnitToDate = (
   unit: TimeUnit,
-  date: dayjs.Dayjs,
+  date: Date,
   unitCount: number
 ) => {
   switch (unit) {
     case TimeUnit.DAY:
-      return date.add(unitCount, 'day');
+      return addDays(date, unitCount);
     case TimeUnit.WEEK:
-      return date.add(unitCount, 'week');
+      return addWeeks(date, unitCount);
     case TimeUnit.MONTH:
-      return date.add(unitCount, 'month');
+      return addMonths(date, unitCount);
     case TimeUnit.YEAR:
-      return date.add(unitCount, 'year');
+      return addYears(date, unitCount);
     case TimeUnit.YEAR_100:
-      return date.add(unitCount * 100, 'year');
+      return addYears(date, unitCount * 100);
     default:
       return date;
   }

@@ -49,7 +49,7 @@ export function TimeChunkViewerDrawer({
 
   const getUnitDate = (unit: TimeChunkUnit) => {
     const unitDate = addUnitToDate(timeChunk.unit, timeChunk.start, unit.index);
-    return unitDate.toDate();
+    return unitDate;
   };
 
   const getSelectedDates = (): [Date] | [Date, Date] | [] => {

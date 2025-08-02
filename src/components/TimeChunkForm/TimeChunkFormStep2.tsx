@@ -12,7 +12,6 @@ import { TimeUnitDatePicker } from '../TimeUnitDatePicker/TimeUnitDatePicker';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form';
 import { TextMuted, TextSmall } from '../ui/typography';
 import { useMemo } from 'react';
-import dayjs from 'dayjs';
 import { Input } from '../ui/input';
 
 const MAX_TIME_CHUNKS = 5000;
@@ -51,7 +50,7 @@ export function TimeChunkFormStep2({
   const chunkCount = form.watch('chunkCount');
   const startDate = form.watch('startDate');
   const parsedEndDate = useMemo(() => {
-    return addUnitToDate(unit, dayjs(startDate), chunkCount);
+    return addUnitToDate(unit, startDate, chunkCount);
   }, [chunkCount, startDate, unit]);
 
   return (
@@ -102,7 +101,7 @@ export function TimeChunkFormStep2({
               </FormControl>
               {startDate && (
                 <TextMuted>
-                  To: {formatDateForUnit(parsedEndDate.toDate(), unit)}
+                  To: {formatDateForUnit(parsedEndDate, unit)}
                 </TextMuted>
               )}
             </FormItem>

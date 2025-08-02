@@ -1,11 +1,5 @@
-import dayjs from 'dayjs';
 import { z } from 'zod';
 import { TimeUnit } from './lib/time';
-
-const dateSchema = z
-  .string()
-  .refine((val) => dayjs(val).isValid(), { message: 'Invalid date' })
-  .transform((val) => dayjs(val));
 
 export const TimeFrameSchema = z.object({
   name: z.string(),
@@ -22,8 +16,8 @@ export const TimeChunkUnitSchema = z.object({
 export const TimeChunkSchema = z.object({
   name: z.string(),
   unit: z.enum(TimeUnit),
-  start: dateSchema,
-  end: dateSchema,
+  start: z.date(),
+  end: z.date(),
   units: z.array(TimeChunkUnitSchema),
   timeframes: z.record(z.string(), TimeFrameSchema),
 });

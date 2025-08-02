@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { addUnitToDate, getUnitLabel, TimeUnit } from '../../lib/time';
 import type { TimeChunk, TimeChunkUnit } from '../../models';
 import { Button } from '../ui/button';
@@ -36,7 +35,7 @@ export function TimeChunkFormDrawer({
   };
 
   const handleStep2Submit = (data: Step2Data) => {
-    const start = dayjs(data.startDate);
+    const start = data.startDate;
     const end = addUnitToDate(step1Data.unit, start, data.chunkCount);
 
     const units: TimeChunkUnit[] = Array.from(
