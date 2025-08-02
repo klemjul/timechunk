@@ -11,11 +11,8 @@ interface TimeChunkUnitBoxProps {
   timeframes: TimeChunk['timeframes'];
   timeChunk: TimeChunk;
   previewUnits: TimeChunkUnit[];
-  /** data-unit-index html attribute */
-  dataUnitIndex?: string | number;
-  onClick?: () => void;
-  onPointerEnter?: () => void;
-  onPointerLeave?: () => void;
+  /** HTML attribute name for unit identification */
+  unitIndexAttribute: string;
   onPointerDown?: () => void;
   onPointerUp?: () => void;
 }
@@ -25,10 +22,7 @@ export function TimeChunkUnitBox({
   selectedUnits,
   timeframes,
   previewUnits,
-  dataUnitIndex = unit.index,
-  onClick,
-  onPointerEnter,
-  onPointerLeave,
+  unitIndexAttribute,
   onPointerDown,
   onPointerUp,
 }: TimeChunkUnitBoxProps) {
@@ -37,7 +31,7 @@ export function TimeChunkUnitBox({
 
   return (
     <div
-      data-unit-index={dataUnitIndex}
+      {...{ [unitIndexAttribute]: unit.index }}
       className={`w-4 h-4 border-1 flex items-center justify-center text-xs font-medium hover:scale-110 transition-transform cursor-pointer ${
         isUnitSelected(selectedUnits, unit)
           ? 'border-stone-50 ring-2 ring-stone-950'
@@ -52,9 +46,6 @@ export function TimeChunkUnitBox({
         // fix default browser drag/scroll
         touchAction: 'none',
       }}
-      onClick={onClick}
-      onPointerEnter={onPointerEnter}
-      onPointerLeave={onPointerLeave}
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
     ></div>

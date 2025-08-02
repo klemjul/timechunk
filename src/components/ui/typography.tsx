@@ -86,6 +86,19 @@ export function TextP({ children, className }: TextPProps) {
   );
 }
 
+interface TextExtraSmallProps {
+  children: ReactNode;
+  className?: string;
+}
+
+export function TextExtraSmall({ children, className }: TextExtraSmallProps) {
+  return (
+    <small className={cn('text-xs leading-none font-medium', className)}>
+      {children}
+    </small>
+  );
+}
+
 interface TextSmallProps {
   children: ReactNode;
   className?: string;
@@ -93,7 +106,7 @@ interface TextSmallProps {
 
 export function TextSmall({ children, className }: TextSmallProps) {
   return (
-    <small className={cn('text-xs leading-none font-medium', className)}>
+    <small className={cn('text-sm leading-none font-medium', className)}>
       {children}
     </small>
   );

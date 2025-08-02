@@ -11,7 +11,10 @@ import {
   DrawerFooter,
 } from '@/components/ui/drawer';
 import { useMemo } from 'react';
-import { TimeFrameForm, type TimeframeFormData } from './TimeFrameForm';
+import {
+  TimeFrameForm,
+  type TimeframeFormData,
+} from '../TimeFrameForm/TimeFrameForm';
 import {
   timeframesOverlapping,
   type SelectedTimeChunkUnits,
@@ -115,7 +118,7 @@ export function TimeChunkViewerDrawer({
                 if (dates.length === 1) {
                   return formatDateForUnit(dates[0], timeChunk.unit);
                 }
-                return `${formatDateForUnit(dates[0], timeChunk.unit)} - ${formatDateForUnit(dates[1], timeChunk.unit)}`;
+                return `${formatDateForUnit(dates[0], timeChunk.unit)} to ${formatDateForUnit(dates[1], timeChunk.unit)}`;
               })()}
             </DrawerTitle>
             <DrawerDescription>
