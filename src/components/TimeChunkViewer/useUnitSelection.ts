@@ -26,7 +26,7 @@ export function useUnitSelection(timeChunk: TimeChunk) {
             unitTimeFrame,
             timeChunk
           );
-          if (unitsInTimeframe.length > 2) {
+          if (unitsInTimeframe.length >= 2) {
             return [
               unitsInTimeframe.at(0),
               unitsInTimeframe.at(-1),

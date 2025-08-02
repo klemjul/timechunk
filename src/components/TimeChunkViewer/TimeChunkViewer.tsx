@@ -88,7 +88,7 @@ export function TimeChunkViewer({
           onUnitPointerDown={handleUnitPointerUp}
         />
         {/* Footer */}
-        <TextMuted>
+        <TextMuted className="mt-5">
           {formatDateForUnit(timeChunk.end, timeChunk.unit)}
         </TextMuted>
       </div>

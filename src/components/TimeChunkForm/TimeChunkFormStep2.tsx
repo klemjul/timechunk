@@ -22,6 +22,7 @@ import { TextMedium, TextMuted, TextSmall } from '../ui/typography';
 import { useMemo } from 'react';
 import { Input } from '../ui/input';
 
+const MIN_TIME_CHUNKS = 100;
 const MAX_TIME_CHUNKS = 10000;
 const MAX_TIME_CHUNKS_SLIDER = 5000;
 
@@ -31,7 +32,7 @@ const step2Schema = z.object({
   }),
   chunkCount: z
     .number()
-    .min(1, 'Must have at least 1 chunk')
+    .min(MIN_TIME_CHUNKS, `Must have at least ${MIN_TIME_CHUNKS} chunk`)
     .max(MAX_TIME_CHUNKS, `Maximum ${MAX_TIME_CHUNKS} chunks allowed`),
 });
 
@@ -52,7 +53,7 @@ export function TimeChunkFormStep2({
     resolver: zodResolver(step2Schema),
     defaultValues: defaultValues || {
       startDate: new Date(),
-      chunkCount: 0,
+      chunkCount: MIN_TIME_CHUNKS,
     },
   });
 
@@ -136,7 +137,7 @@ export function TimeChunkFormStep2({
                   <Slider
                     value={[field.value]}
                     onValueChange={(value) => field.onChange(value[0] || 1)}
-                    min={1}
+                    min={MIN_TIME_CHUNKS}
                     max={MAX_TIME_CHUNKS_SLIDER}
                     step={1}
                     className="w-full"
