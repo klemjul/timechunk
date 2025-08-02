@@ -47,7 +47,11 @@ export function TimeChunkUnitBox({
               ? 'border-neutral-50 ring-1 ring-neutral-400'
               : 'border-gray-300'
       }`}
-      style={{ backgroundColor: timeframe?.color || '#f3f4f6' }}
+      style={{
+        backgroundColor: timeframe?.color || '#f3f4f6',
+        // fix default browser drag/scroll
+        touchAction: 'none',
+      }}
       onClick={onClick}
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
