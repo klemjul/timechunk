@@ -1,4 +1,3 @@
-/* eslint-disable no-case-declarations */
 import { addDays, addMonths, addWeeks, addYears, format } from 'date-fns';
 
 export enum TimeUnit {
@@ -6,7 +5,6 @@ export enum TimeUnit {
   WEEK = 'week',
   DAY = 'day',
   YEAR = 'year',
-  YEAR_100 = 'year_100',
 }
 
 export const formatHistoricalYear = (year: number): string => {
@@ -22,7 +20,6 @@ export const getUnitLabel = (unit: TimeUnit) => {
     [TimeUnit.WEEK]: 'week(s)',
     [TimeUnit.MONTH]: 'month(s)',
     [TimeUnit.YEAR]: 'year(s)',
-    [TimeUnit.YEAR_100]: 'century(s)',
   };
   return labels[unit];
 };
@@ -33,7 +30,6 @@ export const getUnitExample = (unit: TimeUnit) => {
     [TimeUnit.WEEK]: 'My life',
     [TimeUnit.MONTH]: 'The 80s',
     [TimeUnit.YEAR]: 'The Roman Empire',
-    [TimeUnit.YEAR_100]: 'The Humanity',
   };
   return labels[unit];
 };
@@ -44,7 +40,6 @@ export const getPlaceholderForUnit = (unit: TimeUnit): string => {
     [TimeUnit.WEEK]: 'this week, next week, Jan 2025',
     [TimeUnit.MONTH]: 'this month, Jan 2025, 2025-01, in 3 month',
     [TimeUnit.YEAR]: 'this year, past year, 10 year ago, in 100 year',
-    [TimeUnit.YEAR_100]: '2000s, 1900s, 500 BCE',
   };
   return placeholders[unit];
 };
@@ -59,9 +54,6 @@ export const getOrdinalSuffix = (n: number): string => {
 };
 
 export const formatDateForUnit = (date: Date, unit: TimeUnit): string => {
-  const year = date.getFullYear();
-  const isBC = year < 1;
-
   switch (unit) {
     case TimeUnit.DAY:
       return format(date, 'EEEE, MMMM d, yyyy');
@@ -74,12 +66,6 @@ export const formatDateForUnit = (date: Date, unit: TimeUnit): string => {
 
     case TimeUnit.YEAR:
       return format(date, 'yyyy');
-
-    case TimeUnit.YEAR_100:
-      const century = Math.ceil(Math.abs(year) / 100);
-      return isBC
-        ? `${century}th century BCE (${year})`
-        : `${century}th century CE (${year})`;
 
     default:
       return format(date, 'EEEE, MMMM d, yyyy');
@@ -100,8 +86,6 @@ export const addUnitToDate = (
       return addMonths(date, unitCount);
     case TimeUnit.YEAR:
       return addYears(date, unitCount);
-    case TimeUnit.YEAR_100:
-      return addYears(date, unitCount * 100);
     default:
       return date;
   }
