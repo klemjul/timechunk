@@ -67,13 +67,13 @@ export const getOrdinalSuffix = (n: number): string => {
 export const formatDateForUnit = (date: Date, unit: TimeUnit): string => {
   switch (unit) {
     case TimeUnit.DAY:
-      return format(date, 'EEEE, MMMM d, yyyy');
+      return format(date, 'dd MMM yyyy');
 
     case TimeUnit.WEEK:
-      return `Week of ${format(date, 'MMMM d, yyyy')}`;
+      return `${format(date, 'yyyy')} week ${format(date, 'w')}`;
 
     case TimeUnit.MONTH:
-      return format(date, 'MMMM yyyy');
+      return format(date, 'MMM yyyy');
 
     case TimeUnit.YEAR:
       return format(date, 'yyyy');
