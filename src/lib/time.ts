@@ -9,9 +9,9 @@ export enum TimeUnit {
 
 export const formatHistoricalYear = (year: number): string => {
   if (year < 1) {
-    return `${Math.abs(year - 1)} BCE`;
+    return `- ${Math.abs(year - 1)}`;
   }
-  return `${year} CE`;
+  return `${year}`;
 };
 
 export const getUnitLabel = (unit: TimeUnit) => {
@@ -100,4 +100,16 @@ export const addUnitToDate = (
     default:
       return date;
   }
+};
+
+export const getYearForUnitIndex = (
+  startDate: Date,
+  unit: TimeUnit,
+  unitIndex: number,
+  unitsPerLine: number
+): number => {
+  const lineIndex = Math.floor(unitIndex / unitsPerLine);
+  const unitsToAdd = lineIndex * unitsPerLine;
+  const targetDate = addUnitToDate(unit, startDate, unitsToAdd);
+  return targetDate.getFullYear();
 };

@@ -1,7 +1,12 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import type { TimeChunk, TimeChunkUnit, TimeFrame } from '@/models';
 import { TextH2, TextMuted } from '@/components/ui/typography';
-import { getUnitLabel, getUnitByLine } from '@/lib/time';
+import {
+  getUnitLabel,
+  getUnitByLine,
+  getYearForUnitIndex,
+  formatHistoricalYear,
+} from '@/lib/time';
 import { format } from 'date-fns';
 import { TimeChunkUnitBox } from './TimeChunkUnitBox';
 import { TimeChunkViewerDrawer } from './TimeChunkViewerDrawer';
@@ -137,6 +142,25 @@ export function TimeChunkViewer({
     return [];
   };
 
+  const unitsPerLine = getUnitByLine(timeChunk.unit)[isDeviceLarge ? 0 : 1];
+  const totalLines = Math.ceil(timeChunk.units.length / unitsPerLine);
+
+  const getYearMarkerForLine = (lineIndex: number): string | null => {
+    if (lineIndex % 5 === 0) {
+      const unitIndex = lineIndex * unitsPerLine;
+      if (unitIndex < timeChunk.units.length) {
+        const year = getYearForUnitIndex(
+          timeChunk.start,
+          timeChunk.unit,
+          unitIndex,
+          unitsPerLine
+        );
+        return formatHistoricalYear(year);
+      }
+    }
+    return null;
+  };
+
   return (
     <>
       <div className="flex flex-col items-center justify-center min-h-screen p-4 pb-100 pt-20">
@@ -149,26 +173,47 @@ export function TimeChunkViewer({
         <div className="flex flex-col items-center gap-4 w-full">
           <TextMuted>{format(timeChunk.start, 'MMM d, yyyy')}</TextMuted>
 
-          <div
-            ref={containerRef}
-            className="grid gap-1 w-full"
-            style={{
-              gridTemplateColumns: `repeat(${getUnitByLine(timeChunk.unit)[isDeviceLarge ? 0 : 1]}, minmax(0, max-content))`,
-              justifyContent: 'center',
-            }}
-          >
-            {timeChunk.units.map((unit) => (
-              <TimeChunkUnitBox
-                key={unit.index}
-                unit={unit}
-                selectedUnits={selectedUnits}
-                timeframes={timeChunk.timeframes}
-                timeChunk={timeChunk}
-                previewUnits={getPreviewUnits()}
-                onPointerDown={() => handlePointerDown(unit)}
-                onPointerUp={handlePointerUp}
-              />
-            ))}
+          <div className="flex items-start gap-4">
+            <div
+              className="flex flex-col text-xs text-muted-foreground  text-right"
+              style={{ gap: '4px' }}
+            >
+              {Array.from({ length: totalLines }, (_, lineIndex) => {
+                const yearMarker = getYearMarkerForLine(lineIndex);
+                return (
+                  <div
+                    key={lineIndex}
+                    className="h-4 flex items-center justify-end"
+                  >
+                    {yearMarker && (
+                      <span className="font-medium">{yearMarker}</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div
+              ref={containerRef}
+              className="grid gap-1"
+              style={{
+                gridTemplateColumns: `repeat(${unitsPerLine}, minmax(0, max-content))`,
+                justifyContent: 'center',
+              }}
+            >
+              {timeChunk.units.map((unit) => (
+                <TimeChunkUnitBox
+                  key={unit.index}
+                  unit={unit}
+                  selectedUnits={selectedUnits}
+                  timeframes={timeChunk.timeframes}
+                  timeChunk={timeChunk}
+                  previewUnits={getPreviewUnits()}
+                  onPointerDown={() => handlePointerDown(unit)}
+                  onPointerUp={handlePointerUp}
+                />
+              ))}
+            </div>
           </div>
 
           <TextMuted>{format(timeChunk.end, 'MMM d, yyyy')}</TextMuted>
