@@ -167,6 +167,7 @@ export function TimeChunkViewer({
       <TimeChunkViewerDrawer
         timeChunk={timeChunk}
         selectedUnits={selectedUnits}
+        previewUnit={selectedPreviewUnit}
         isDrawerOpen={isDrawerOpen}
         onDrawerOpenChange={handleDrawerOpenChange}
         onTimeChunkUpdate={onTimeChunkUpdate}

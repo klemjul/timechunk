@@ -20,6 +20,7 @@ import {
 interface TimeChunkViewerDrawerProps {
   timeChunk: TimeChunk;
   selectedUnits: SelectedTimeChunkUnits;
+  previewUnit?: TimeChunkUnit | null;
   isDrawerOpen: boolean;
   onDrawerOpenChange: (open: boolean) => void;
   onTimeChunkUpdate?: (timeChunk: TimeChunk) => void;
@@ -28,6 +29,7 @@ interface TimeChunkViewerDrawerProps {
 export function TimeChunkViewerDrawer({
   timeChunk,
   selectedUnits,
+  previewUnit,
   isDrawerOpen,
   onDrawerOpenChange,
   onTimeChunkUpdate,
@@ -55,6 +57,13 @@ export function TimeChunkViewerDrawer({
   const getSelectedDates = (): [Date] | [Date, Date] | [] => {
     if (selectedUnits.length === 0) return [];
     if (selectedUnits.length === 1) {
+      if (previewUnit) {
+        const selectedDate = getUnitDate(selectedUnits[0]);
+        const previewDate = getUnitDate(previewUnit);
+        return selectedUnits[0].index <= previewUnit.index
+          ? [selectedDate, previewDate]
+          : [previewDate, selectedDate];
+      }
       return [getUnitDate(selectedUnits[0])];
     }
     return [getUnitDate(selectedUnits[0]), getUnitDate(selectedUnits[1])];
