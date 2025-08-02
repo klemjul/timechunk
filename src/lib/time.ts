@@ -1,4 +1,14 @@
-import { addDays, addMonths, addWeeks, addYears, format } from 'date-fns';
+import {
+  addDays,
+  addMonths,
+  addWeeks,
+  addYears,
+  format,
+  differenceInDays,
+  differenceInWeeks,
+  differenceInMonths,
+  differenceInYears,
+} from 'date-fns';
 
 export enum TimeUnit {
   MONTH = 'month',
@@ -9,7 +19,7 @@ export enum TimeUnit {
 
 export const formatHistoricalYear = (year: number): string => {
   if (year < 1) {
-    return `- ${Math.abs(year - 1)}`;
+    return `-${Math.abs(year - 1)}`;
   }
   return `${year}`;
 };
@@ -65,21 +75,24 @@ export const getOrdinalSuffix = (n: number): string => {
 };
 
 export const formatDateForUnit = (date: Date, unit: TimeUnit): string => {
+  const year = date.getFullYear();
+  const historicalYear = formatHistoricalYear(year);
+
   switch (unit) {
     case TimeUnit.DAY:
-      return format(date, 'dd MMM yyyy');
+      return `${format(date, 'dd MMM')} ${historicalYear}`;
 
     case TimeUnit.WEEK:
-      return `${format(date, 'yyyy')} week ${format(date, 'w')}`;
+      return `${historicalYear} week ${format(date, 'w')}`;
 
     case TimeUnit.MONTH:
-      return format(date, 'MMM yyyy');
+      return `${format(date, 'MMM')} ${historicalYear}`;
 
     case TimeUnit.YEAR:
-      return format(date, 'yyyy');
+      return historicalYear;
 
     default:
-      return format(date, 'EEEE, MMMM d, yyyy');
+      throw new Error(`formatDateForUnit: unit ${unit} not supported`);
   }
 };
 
@@ -98,7 +111,7 @@ export const addUnitToDate = (
     case TimeUnit.YEAR:
       return addYears(date, unitCount);
     default:
-      return date;
+      throw new Error(`addUnitToDate: unit ${unit} not supported`);
   }
 };
 
@@ -112,4 +125,23 @@ export const getYearForUnitIndex = (
   const unitsToAdd = lineIndex * unitsPerLine;
   const targetDate = addUnitToDate(unit, startDate, unitsToAdd);
   return targetDate.getFullYear();
+};
+
+export const getChunkCountFromDates = (
+  unit: TimeUnit,
+  startDate: Date,
+  endDate: Date
+): number => {
+  switch (unit) {
+    case TimeUnit.DAY:
+      return Math.max(1, differenceInDays(endDate, startDate) + 1);
+    case TimeUnit.WEEK:
+      return Math.max(1, differenceInWeeks(endDate, startDate) + 1);
+    case TimeUnit.MONTH:
+      return Math.max(1, differenceInMonths(endDate, startDate) + 1);
+    case TimeUnit.YEAR:
+      return Math.max(1, differenceInYears(endDate, startDate) + 1);
+    default:
+      throw new Error(`getChunkCountFromDates: unit ${unit} not supported`);
+  }
 };

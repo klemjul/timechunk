@@ -11,8 +11,14 @@ import {
 } from '../ui/drawer';
 import { useState } from 'react';
 import { TextLarge } from '../ui/typography';
-import { TimeChunkFormStep1, type Step1Data } from './TimeChunkFormStep1';
-import { TimeChunkFormStep2, type Step2Data } from './TimeChunkFormStep2';
+import {
+  TimeChunkFormStep1,
+  type Step1Data,
+} from '../TimeChunkForm/TimeChunkFormStep1';
+import {
+  TimeChunkFormStep2,
+  type Step2Data,
+} from '../TimeChunkForm/TimeChunkFormStep2';
 
 interface TimeChunkFormProps {
   onComplete: (timeChunk: TimeChunk) => void;

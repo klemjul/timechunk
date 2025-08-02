@@ -1,7 +1,7 @@
 import type { TimeChunk } from '../../models';
 import { Button } from '../ui/button';
 import { Drawer, DrawerTrigger } from '../ui/drawer';
-import { TimeChunkFormDrawer } from '../TimeChunkForm/TimeChunkFormDrawer';
+import { TimeChunkFormDrawer } from './TimeChunkInitializerDrawer';
 
 interface TimeChunkInitializerProps {
   onComplete: (timeChunk: TimeChunk) => void;
