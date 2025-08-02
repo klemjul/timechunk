@@ -29,6 +29,7 @@ interface TimeFrameFormProps {
   timeChunk: TimeChunk;
   formId: string;
   resetTrigger?: unknown;
+  defaultValues?: Partial<TimeframeFormData>;
 }
 
 export function TimeFrameForm({
@@ -36,9 +37,15 @@ export function TimeFrameForm({
   timeChunk,
   formId,
   resetTrigger,
+  defaultValues,
 }: TimeFrameFormProps) {
   const timeframeSchemaWithValidation = timeframeSchema.refine(
     (data) => {
+      // ok if updating
+      if (data.name === defaultValues?.name) {
+        return true;
+      }
+
       const existingNames = Object.keys(timeChunk.timeframes).map((name) =>
         name.toLowerCase().trim()
       );
@@ -53,8 +60,8 @@ export function TimeFrameForm({
   const form = useForm<TimeframeFormData>({
     resolver: zodResolver(timeframeSchemaWithValidation),
     defaultValues: {
-      name: '',
-      color: '#3b82f6',
+      name: defaultValues?.name || '',
+      color: defaultValues?.color || '#3b82f6',
     },
   });
 

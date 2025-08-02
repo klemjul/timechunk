@@ -1,5 +1,6 @@
 import type { TimeChunk, TimeChunkUnit } from '@/models';
 import { Button } from '@/components/ui/button';
+import { ColorDisplay } from '@/components/ui/ColorDisplay';
 import { addUnitToDate, formatDateForUnit } from '@/lib/time';
 import {
   Drawer,
@@ -10,7 +11,7 @@ import {
   DrawerClose,
   DrawerFooter,
 } from '@/components/ui/drawer';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   TimeFrameForm,
   type TimeframeFormData,
@@ -19,6 +20,11 @@ import {
   timeframesOverlapping,
   type SelectedTimeChunkUnits,
 } from '@/lib/timeframe';
+import {
+  createTimeframe,
+  deleteTimeframe,
+  updateTimeframe,
+} from '@/lib/timechunk';
 
 interface TimeChunkViewerDrawerProps {
   timeChunk: TimeChunk;
@@ -37,6 +43,8 @@ export function TimeChunkViewerDrawer({
   onDrawerOpenChange,
   onTimeChunkUpdate,
 }: TimeChunkViewerDrawerProps) {
+  const [isEditMode, setIsEditMode] = useState(false);
+
   const overlappingTimeframes = useMemo(() => {
     const [start, end] = selectedUnits;
     if (start && end) {
@@ -51,6 +59,13 @@ export function TimeChunkViewerDrawer({
   const shouldDisplayForm = useMemo(() => {
     return selectedUnits.length == 2 && overlappingTimeframes.length == 0;
   }, [selectedUnits, overlappingTimeframes]);
+
+  const selectedTimeframe = useMemo(() => {
+    if (selectedUnits.length === 3) {
+      return selectedUnits[2];
+    }
+    return null;
+  }, [selectedUnits]);
 
   const getUnitDate = (unit: TimeChunkUnit) => {
     const unitDate = addUnitToDate(timeChunk.unit, timeChunk.start, unit.index);
@@ -72,35 +87,51 @@ export function TimeChunkViewerDrawer({
     return [getUnitDate(selectedUnits[0]), getUnitDate(selectedUnits[1])];
   };
 
-  const handleCreateTimeframe = (data: TimeframeFormData) => {
+  const handleCreateTimeframe = ({ color, name }: TimeframeFormData) => {
     if (!onTimeChunkUpdate || selectedUnits.length !== 2) {
       return;
     }
 
     const [startUnit, endUnit] = selectedUnits;
-
-    const updatedTimeframes = {
-      ...timeChunk.timeframes,
-      [data.name]: {
-        name: data.name,
-        color: data.color,
-        startIndex: startUnit.index,
-        endIndex: endUnit.index,
-      },
-    };
-
-    const updatedUnits = timeChunk.units.map((unit) => {
-      if (unit.index >= startUnit.index && unit.index <= endUnit.index) {
-        return { ...unit, timeframe: data.name };
-      }
-      return unit;
+    const updatedTimeChunk = createTimeframe(timeChunk, {
+      color,
+      name,
+      startIndex: startUnit.index,
+      endIndex: endUnit.index,
     });
 
-    const updatedTimeChunk = {
-      ...timeChunk,
-      timeframes: updatedTimeframes,
-      units: updatedUnits,
-    };
+    onTimeChunkUpdate(updatedTimeChunk);
+    onDrawerOpenChange(false);
+  };
+
+  const handleUpdateTimeframe = (data: TimeframeFormData) => {
+    if (!onTimeChunkUpdate || !selectedTimeframe) {
+      return;
+    }
+
+    const updatedTimeChunk = updateTimeframe(
+      timeChunk,
+      selectedTimeframe.name,
+      {
+        name: data.name,
+        color: data.color,
+        startIndex: selectedTimeframe.startIndex,
+        endIndex: selectedTimeframe.endIndex,
+      }
+    );
+    console.log(updatedTimeChunk);
+
+    onTimeChunkUpdate(updatedTimeChunk);
+    setIsEditMode(false);
+    onDrawerOpenChange(false);
+  };
+
+  const handleDeleteTimeframe = () => {
+    if (!onTimeChunkUpdate || !selectedTimeframe) {
+      return;
+    }
+
+    const updatedTimeChunk = deleteTimeframe(timeChunk, selectedTimeframe.name);
 
     onTimeChunkUpdate(updatedTimeChunk);
     onDrawerOpenChange(false);
@@ -123,10 +154,6 @@ export function TimeChunkViewerDrawer({
             </DrawerTitle>
             <DrawerDescription>
               {(() => {
-                if (selectedUnits.length === 3) {
-                  const timeframe = selectedUnits[2];
-                  return `Timeframe: ${timeframe.name}`;
-                }
                 if (shouldDisplayForm) {
                   return 'Create a timeframe for this date range';
                 }
@@ -134,12 +161,34 @@ export function TimeChunkViewerDrawer({
               })()}
             </DrawerDescription>
           </DrawerHeader>
+          {selectedTimeframe && (
+            <div className="px-4 pb-4">
+              <div className="space-y-2">
+                <ColorDisplay
+                  text={`${selectedTimeframe.name}`}
+                  color={selectedTimeframe.color}
+                />
+              </div>
+            </div>
+          )}
           {shouldDisplayForm && (
             <TimeFrameForm
               onSubmit={handleCreateTimeframe}
               timeChunk={timeChunk}
               formId="timeframe-form"
               resetTrigger={selectedUnits}
+            />
+          )}
+          {selectedTimeframe && isEditMode && (
+            <TimeFrameForm
+              onSubmit={handleUpdateTimeframe}
+              timeChunk={timeChunk}
+              formId="edit-timeframe-form"
+              resetTrigger={[isEditMode]}
+              defaultValues={{
+                name: selectedTimeframe.name,
+                color: selectedTimeframe.color,
+              }}
             />
           )}
           <DrawerFooter>
@@ -159,6 +208,46 @@ export function TimeChunkViewerDrawer({
                   >
                     Create Time Chunk
                   </Button>
+                )}
+                {selectedTimeframe && !isEditMode && (
+                  <>
+                    <Button
+                      type="button"
+                      variant="default"
+                      className="flex-2"
+                      onClick={() => setIsEditMode(true)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      className="flex-1"
+                      onClick={handleDeleteTimeframe}
+                    >
+                      Delete
+                    </Button>
+                  </>
+                )}
+                {selectedTimeframe && isEditMode && (
+                  <>
+                    <Button
+                      type="submit"
+                      form="edit-timeframe-form"
+                      variant="default"
+                      className="flex-2"
+                    >
+                      Save Changes
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => setIsEditMode(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </>
                 )}
               </>
             </div>
