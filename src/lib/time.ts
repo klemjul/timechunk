@@ -24,6 +24,17 @@ export const getUnitLabel = (unit: TimeUnit) => {
   return labels[unit];
 };
 
+/** Return unit by lines for web and mobile devices */
+export const getUnitByLine = (unit: TimeUnit) => {
+  const labels: Record<TimeUnit, [number, number]> = {
+    [TimeUnit.DAY]: [30, 15],
+    [TimeUnit.WEEK]: [52, 17],
+    [TimeUnit.MONTH]: [12, 12],
+    [TimeUnit.YEAR]: [25, 10],
+  };
+  return labels[unit];
+};
+
 export const getUnitExample = (unit: TimeUnit) => {
   const labels: Record<TimeUnit, string> = {
     [TimeUnit.DAY]: 'My year',

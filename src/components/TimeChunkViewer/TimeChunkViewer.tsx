@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import type { TimeChunk, TimeChunkUnit, TimeFrame } from '@/models';
 import { TextH2, TextMuted } from '@/components/ui/typography';
-import { getUnitLabel } from '@/lib/time';
+import { getUnitLabel, getUnitByLine } from '@/lib/time';
 import { format } from 'date-fns';
 import { TimeChunkUnitBox } from './TimeChunkUnitBox';
 import { TimeChunkViewerDrawer } from './TimeChunkViewerDrawer';
@@ -11,6 +11,7 @@ import {
   type SelectedTimeChunkUnits,
 } from '@/lib/timeframe';
 import { useMobileDetection } from '@/hooks/useMobileDetection';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 
 interface TimeChunkViewerProps {
   timeChunk: TimeChunk;
@@ -29,6 +30,11 @@ export function TimeChunkViewer({
     useState<TimeChunkUnit | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isMobile = useMobileDetection();
+  const breakpoint = useBreakpoint();
+
+  const isDeviceLarge = useMemo(() => {
+    return ['lg', 'xl', '2xl'].includes(breakpoint ?? 'sm');
+  }, [breakpoint]);
 
   // manage drawer opening
   useEffect(() => {
@@ -140,12 +146,16 @@ export function TimeChunkViewer({
           </TextH2>
         </div>
 
-        <div className="flex flex-col items-center gap-4 w-full max-w-4xl mx-auto px-2">
+        <div className="flex flex-col items-center gap-4 w-full">
           <TextMuted>{format(timeChunk.start, 'MMM d, yyyy')}</TextMuted>
 
           <div
             ref={containerRef}
-            className="flex flex-wrap justify-center gap-1 w-full"
+            className="grid gap-1 w-full"
+            style={{
+              gridTemplateColumns: `repeat(${getUnitByLine(timeChunk.unit)[isDeviceLarge ? 0 : 1]}, minmax(0, max-content))`,
+              justifyContent: 'center',
+            }}
           >
             {timeChunk.units.map((unit) => (
               <TimeChunkUnitBox
