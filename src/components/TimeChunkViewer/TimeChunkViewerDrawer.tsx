@@ -119,9 +119,16 @@ export function TimeChunkViewerDrawer({
               })()}
             </DrawerTitle>
             <DrawerDescription>
-              {shouldDisplayForm
-                ? 'Create a timeframe for this date range'
-                : ''}
+              {(() => {
+                if (selectedUnits.length === 3) {
+                  const timeframe = selectedUnits[2];
+                  return `Timeframe: ${timeframe.name}`;
+                }
+                if (shouldDisplayForm) {
+                  return 'Create a timeframe for this date range';
+                }
+                return '';
+              })()}
             </DrawerDescription>
           </DrawerHeader>
           {shouldDisplayForm && (

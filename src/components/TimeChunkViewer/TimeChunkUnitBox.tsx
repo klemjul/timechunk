@@ -38,7 +38,7 @@ export function TimeChunkUnitBox({
   return (
     <div
       data-unit-index={dataUnitIndex}
-      className={`w-6 h-6 rounded border-2 flex items-center justify-center text-xs font-medium hover:scale-110 transition-transform cursor-pointer ${
+      className={`w-4 h-4 border-1 flex items-center justify-center text-xs font-medium hover:scale-110 transition-transform cursor-pointer ${
         isUnitSelected(selectedUnits, unit)
           ? 'border-stone-50 ring-2 ring-stone-950'
           : isUnitInRange(selectedUnits, unit)

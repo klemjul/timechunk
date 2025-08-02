@@ -145,7 +145,7 @@ export function TimeChunkViewer({
 
           <div
             ref={containerRef}
-            className="flex flex-wrap justify-center gap-2 w-full"
+            className="flex flex-wrap justify-center gap-1 w-full"
           >
             {timeChunk.units.map((unit) => (
               <TimeChunkUnitBox
