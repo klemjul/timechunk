@@ -11,9 +11,13 @@ interface TimeChunkUnitBoxProps {
   timeframes: TimeChunk['timeframes'];
   timeChunk: TimeChunk;
   previewUnits: TimeChunkUnit[];
-  onClick: () => void;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
+  /** data-unit-index html attribute */
+  dataUnitIndex?: string | number;
+  onClick?: () => void;
+  onPointerEnter?: () => void;
+  onPointerLeave?: () => void;
+  onPointerDown?: () => void;
+  onPointerUp?: () => void;
 }
 
 export function TimeChunkUnitBox({
@@ -21,15 +25,19 @@ export function TimeChunkUnitBox({
   selectedUnits,
   timeframes,
   previewUnits,
+  dataUnitIndex = unit.index,
   onClick,
-  onMouseEnter,
-  onMouseLeave,
+  onPointerEnter,
+  onPointerLeave,
+  onPointerDown,
+  onPointerUp,
 }: TimeChunkUnitBoxProps) {
   const timeframe = timeframes[unit.timeframe];
   const isInPreview = previewUnits.some((pUnit) => pUnit.index === unit.index);
 
   return (
     <div
+      data-unit-index={dataUnitIndex}
       className={`w-6 h-6 rounded border-2 flex items-center justify-center text-xs font-medium hover:scale-110 transition-transform cursor-pointer ${
         isUnitSelected(selectedUnits, unit)
           ? 'border-stone-50 ring-2 ring-stone-950'
@@ -41,8 +49,10 @@ export function TimeChunkUnitBox({
       }`}
       style={{ backgroundColor: timeframe?.color || '#f3f4f6' }}
       onClick={onClick}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onPointerEnter={onPointerEnter}
+      onPointerLeave={onPointerLeave}
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
     ></div>
   );
 }
