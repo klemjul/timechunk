@@ -6,6 +6,8 @@ import {
   getUnitByLine,
   getYearForUnitIndex,
   formatHistoricalYear,
+  addUnitToDate,
+  TimeUnit,
 } from '@/lib/time';
 import { format } from 'date-fns';
 import { TimeChunkUnitBox } from './TimeChunkUnitBox';
@@ -155,6 +157,17 @@ export function TimeChunkViewer({
           unitIndex,
           unitsPerLine
         );
+
+        if (timeChunk.unit === TimeUnit.DAY) {
+          const lineDate = addUnitToDate(
+            timeChunk.unit,
+            timeChunk.start,
+            unitIndex
+          );
+          const monthName = format(lineDate, 'MMM');
+          return `${formatHistoricalYear(year)} ${monthName}`;
+        }
+
         return formatHistoricalYear(year);
       }
     }
