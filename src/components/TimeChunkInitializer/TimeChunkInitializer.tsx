@@ -4,16 +4,14 @@ import { Drawer, DrawerTrigger } from '../ui/drawer';
 import { TimeChunkFormDrawer } from './TimeChunkInitializerDrawer';
 
 interface TimeChunkInitializerProps {
-  onComplete: (timeChunk: TimeChunk) => void;
+  onTimeChunkCreate: (timeChunk: TimeChunk) => void;
+  onTimeChunkImport: () => void;
 }
 
 export function TimeChunkInitializer({
-  onComplete,
+  onTimeChunkCreate,
+  onTimeChunkImport,
 }: TimeChunkInitializerProps) {
-  const handleOpenExisting = () => {
-    // TODO: Implement opening existing time chunk
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="flex flex-col gap-4 w-full max-w-md">
@@ -25,7 +23,7 @@ export function TimeChunkInitializer({
           </DrawerTrigger>
           <TimeChunkFormDrawer
             title="Create a new Time Chunk"
-            onComplete={onComplete}
+            onComplete={onTimeChunkCreate}
           />
         </Drawer>
 
@@ -33,7 +31,7 @@ export function TimeChunkInitializer({
           size="lg"
           variant="outline"
           className="h-16 text-lg"
-          onClick={handleOpenExisting}
+          onClick={onTimeChunkImport}
         >
           Open an existing Time Chunk
         </Button>

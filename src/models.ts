@@ -22,6 +22,15 @@ export const TimeChunkSchema = z.object({
   timeframes: z.record(z.string(), TimeFrameSchema),
 });
 
+export const TimeChunkJSONSchema = TimeChunkSchema.omit({ units: true }).extend(
+  {
+    start: z.string().transform((str) => new Date(str)),
+    end: z.string().transform((str) => new Date(str)),
+  }
+);
+
+export type TimeChunkJSON = z.infer<typeof TimeChunkJSONSchema>;
+
 export type TimeChunk = z.infer<typeof TimeChunkSchema>;
 
 export type TimeChunkUnit = z.infer<typeof TimeChunkUnitSchema>;

@@ -1,4 +1,44 @@
-import type { TimeChunk, TimeFrame } from '@/models';
+import type { TimeChunk, TimeChunkJSON, TimeFrame } from '@/models';
+import { TimeChunkJSONSchema } from '@/models';
+import { getChunkCountFromDates } from '@/lib/time';
+
+export function timeChunkToJSON(timeChunk: TimeChunk) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { units, ...timeChunkJSON } = timeChunk;
+  return JSON.stringify(timeChunkJSON as TimeChunkJSON);
+}
+
+export function timeChunkFromJSON(timeChunk: string): TimeChunk {
+  const parsed = JSON.parse(timeChunk);
+  const timeChunkJSON = TimeChunkJSONSchema.parse(parsed);
+
+  // Calculate the chunk count based on the date range and unit
+  const chunkCount = getChunkCountFromDates(
+    timeChunkJSON.unit,
+    timeChunkJSON.start,
+    timeChunkJSON.end
+  );
+
+  // Generate units array and assign timeframes
+  const units = Array.from({ length: chunkCount }, (_, index) => {
+    // Find which timeframe this unit belongs to
+    const timeframeName =
+      Object.values(timeChunkJSON.timeframes).find(
+        (timeframe) =>
+          index >= timeframe.startIndex && index <= timeframe.endIndex
+      )?.name || '';
+
+    return {
+      index,
+      timeframe: timeframeName,
+    };
+  });
+
+  return {
+    ...timeChunkJSON,
+    units,
+  };
+}
 
 export function createTimeframe(
   timeChunk: TimeChunk,

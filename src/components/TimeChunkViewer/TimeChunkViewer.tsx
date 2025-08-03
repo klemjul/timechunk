@@ -16,6 +16,8 @@ import { Button } from '../ui/button';
 interface TimeChunkViewerProps {
   timeChunk: TimeChunk;
   onTimeChunkUpdate?: (timeChunk: TimeChunk) => void;
+  onTimeChunkExport?: (timeChunk: TimeChunk) => void;
+  onTimeChunkImport?: () => void;
 }
 
 const unitIndexAttribute = 'data-unit-index';
@@ -23,6 +25,8 @@ const unitIndexAttribute = 'data-unit-index';
 export function TimeChunkViewer({
   timeChunk,
   onTimeChunkUpdate,
+  onTimeChunkExport,
+  onTimeChunkImport,
 }: TimeChunkViewerProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLegendDrawerOpen, setIsLegendDrawerOpen] = useState(false);
@@ -106,10 +110,14 @@ export function TimeChunkViewer({
         <div className="flex justify-between p-4">
           <Menubar>
             <MenubarMenu>
-              <MenubarTrigger>Export</MenubarTrigger>
+              <MenubarTrigger onClick={() => onTimeChunkExport?.(timeChunk)}>
+                Export
+              </MenubarTrigger>
             </MenubarMenu>
             <MenubarMenu>
-              <MenubarTrigger>Open</MenubarTrigger>
+              <MenubarTrigger onClick={() => onTimeChunkImport?.()}>
+                Open
+              </MenubarTrigger>
             </MenubarMenu>
           </Menubar>
           <Button
