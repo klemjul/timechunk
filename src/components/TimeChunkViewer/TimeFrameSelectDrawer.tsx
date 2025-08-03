@@ -17,6 +17,17 @@ import {
   type TimeframeFormData,
 } from '../TimeFrameForm/TimeFrameForm';
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import {
   timeframesOverlapping,
   type SelectedTimeChunkUnits,
 } from '@/lib/timeframe';
@@ -217,14 +228,33 @@ export function TimeFrameSelectDrawer({
                     >
                       Edit
                     </Button>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      className="flex-1"
-                      onClick={handleDeleteTimeframe}
-                    >
-                      Delete
-                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          className="flex-1"
+                        >
+                          Delete
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Timeframe</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete "
+                            {selectedTimeframe?.name}"? This action cannot be
+                            undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleDeleteTimeframe}>
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </>
                 )}
                 {selectedTimeframe && selectedTimeframeEdit && (

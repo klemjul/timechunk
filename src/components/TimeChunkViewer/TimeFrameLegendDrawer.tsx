@@ -8,6 +8,7 @@ import {
   DrawerFooter,
 } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import type { SelectedTimeChunkUnits } from '@/lib/timeframe';
 import { TimeFrameLegend } from '@/components/TimeFrameLegend/TimeFrameLegend';
 
@@ -31,12 +32,12 @@ export function TimeFrameLegendDrawer({
           <DrawerHeader>
             <DrawerTitle>Timeframe Legend</DrawerTitle>
           </DrawerHeader>
-          <div className="px-2 h-32 overflow-y-auto">
+          <ScrollArea className="px-2 h-32">
             <TimeFrameLegend
               timeChunk={timeChunk}
               onTimeframeClick={onTimeframeClick}
             />
-          </div>
+          </ScrollArea>
           <DrawerFooter>
             <DrawerClose asChild>
               <Button type="button" variant="outline" className="w-full">

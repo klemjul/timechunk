@@ -7,9 +7,11 @@ import { TimeChunkGrid } from './TimeChunkGrid';
 import { useUnitSelection } from '@/components/TimeChunkViewer/useUnitSelection';
 import { useUnitPreview } from '@/components/TimeChunkViewer/useUnitPreview';
 import { TextH2, TextMuted } from '../ui/typography';
-import { Button } from '../ui/button';
+
+import { Menubar, MenubarMenu, MenubarTrigger } from '../ui/menubar';
 import { useMobileDetection } from '@/hooks/useMobileDetection';
 import type { SelectedTimeChunkUnits } from '@/lib/timeframe';
+import { Button } from '../ui/button';
 
 interface TimeChunkViewerProps {
   timeChunk: TimeChunk;
@@ -99,9 +101,17 @@ export function TimeChunkViewer({
 
   return (
     <>
-      {/* Sticky Action Bar */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-        <div className="flex justify-end p-4">
+      {/* Sticky Menubar */}
+      <div className="fixed top-0 left-0 right-0 z-50 border-b ">
+        <div className="flex justify-between p-4">
+          <Menubar>
+            <MenubarMenu>
+              <MenubarTrigger>Export</MenubarTrigger>
+            </MenubarMenu>
+            <MenubarMenu>
+              <MenubarTrigger>Open</MenubarTrigger>
+            </MenubarMenu>
+          </Menubar>
           <Button
             variant="default"
             size="sm"
