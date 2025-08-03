@@ -106,7 +106,7 @@ export function TimeChunkViewer({
   return (
     <>
       {/* Sticky Menubar */}
-      <div className="fixed top-0 left-0 right-0 z-50 border-b ">
+      <div className="fixed top-0 left-0 right-0 z-50 border-b bg-white">
         <div className="flex justify-between p-4">
           <Menubar>
             <MenubarMenu>
