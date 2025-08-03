@@ -26,7 +26,7 @@ import {
   updateTimeframe,
 } from '@/lib/timechunk';
 
-interface TimeChunkViewerDrawerProps {
+interface TimeFrameSelectDrawerProps {
   timeChunk: TimeChunk;
   selectedUnits: SelectedTimeChunkUnits;
   previewUnit?: TimeChunkUnit | null;
@@ -35,16 +35,14 @@ interface TimeChunkViewerDrawerProps {
   onTimeChunkUpdate?: (timeChunk: TimeChunk) => void;
 }
 
-export function TimeChunkViewerDrawer({
+export function TimeFrameSelectDrawer({
   timeChunk,
   selectedUnits,
   previewUnit,
   isDrawerOpen,
   onDrawerOpenChange,
   onTimeChunkUpdate,
-}: TimeChunkViewerDrawerProps) {
-  const [isEditMode, setIsEditMode] = useState(false);
-
+}: TimeFrameSelectDrawerProps) {
   const overlappingTimeframes = useMemo(() => {
     const [start, end] = selectedUnits;
     if (start && end) {
@@ -60,6 +58,7 @@ export function TimeChunkViewerDrawer({
     return selectedUnits.length == 2 && overlappingTimeframes.length == 0;
   }, [selectedUnits, overlappingTimeframes]);
 
+  const [selectedTimeframeEdit, setSelectedTimeframeEdit] = useState(false);
   const selectedTimeframe = useMemo(() => {
     if (selectedUnits.length === 3) {
       return selectedUnits[2];
@@ -119,10 +118,9 @@ export function TimeChunkViewerDrawer({
         endIndex: selectedTimeframe.endIndex,
       }
     );
-    console.log(updatedTimeChunk);
 
     onTimeChunkUpdate(updatedTimeChunk);
-    setIsEditMode(false);
+    setSelectedTimeframeEdit(false);
     onDrawerOpenChange(false);
   };
 
@@ -179,12 +177,12 @@ export function TimeChunkViewerDrawer({
               resetTrigger={selectedUnits}
             />
           )}
-          {selectedTimeframe && isEditMode && (
+          {selectedTimeframe && selectedTimeframeEdit && (
             <TimeFrameForm
               onSubmit={handleUpdateTimeframe}
               timeChunk={timeChunk}
               formId="edit-timeframe-form"
-              resetTrigger={[isEditMode]}
+              resetTrigger={[selectedTimeframeEdit]}
               defaultValues={{
                 name: selectedTimeframe.name,
                 color: selectedTimeframe.color,
@@ -209,13 +207,13 @@ export function TimeChunkViewerDrawer({
                     Create Time Chunk
                   </Button>
                 )}
-                {selectedTimeframe && !isEditMode && (
+                {selectedTimeframe && !selectedTimeframeEdit && (
                   <>
                     <Button
                       type="button"
                       variant="default"
                       className="flex-2"
-                      onClick={() => setIsEditMode(true)}
+                      onClick={() => setSelectedTimeframeEdit(true)}
                     >
                       Edit
                     </Button>
@@ -229,7 +227,7 @@ export function TimeChunkViewerDrawer({
                     </Button>
                   </>
                 )}
-                {selectedTimeframe && isEditMode && (
+                {selectedTimeframe && selectedTimeframeEdit && (
                   <>
                     <Button
                       type="submit"
@@ -243,7 +241,7 @@ export function TimeChunkViewerDrawer({
                       type="button"
                       variant="outline"
                       className="flex-1"
-                      onClick={() => setIsEditMode(false)}
+                      onClick={() => setSelectedTimeframeEdit(false)}
                     >
                       Cancel
                     </Button>

@@ -52,6 +52,7 @@ export function useUnitSelection(timeChunk: TimeChunk) {
 
   return {
     selectedUnits,
+    setSelectedUnits,
     handleUnitSelection,
     clearSelection,
   };

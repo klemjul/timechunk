@@ -1,12 +1,15 @@
 import { useEffect, useState, useRef } from 'react';
 import type { TimeChunk, TimeChunkUnit } from '@/models';
 import { formatDateForUnit, getUnitLabel } from '@/lib/time';
-import { TimeChunkViewerDrawer } from './TimeChunkViewerDrawer';
+import { TimeFrameSelectDrawer } from './TimeFrameSelectDrawer';
+import { TimeFrameLegendDrawer } from './TimeFrameLegendDrawer';
 import { TimeChunkGrid } from './TimeChunkGrid';
 import { useUnitSelection } from '@/components/TimeChunkViewer/useUnitSelection';
 import { useUnitPreview } from '@/components/TimeChunkViewer/useUnitPreview';
 import { TextH2, TextMuted } from '../ui/typography';
+import { Button } from '../ui/button';
 import { useMobileDetection } from '@/hooks/useMobileDetection';
+import type { SelectedTimeChunkUnits } from '@/lib/timeframe';
 
 interface TimeChunkViewerProps {
   timeChunk: TimeChunk;
@@ -20,7 +23,8 @@ export function TimeChunkViewer({
   onTimeChunkUpdate,
 }: TimeChunkViewerProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const gridContainerRef = useRef(null);
+  const [isLegendDrawerOpen, setIsLegendDrawerOpen] = useState(false);
+  const gridContainerRef = useRef<HTMLDivElement>(null);
 
   const unitSelection = useUnitSelection(timeChunk);
   const unitPreview = useUnitPreview({
@@ -33,13 +37,13 @@ export function TimeChunkViewer({
   const isMobile = useMobileDetection();
 
   useEffect(() => {
-    if (unitSelection.selectedUnits.length === 0) {
+    if (unitSelection.selectedUnits.length === 0 || isLegendDrawerOpen) {
       setIsDrawerOpen(false);
       unitPreview.clearPreview();
     } else {
       setIsDrawerOpen(true);
     }
-  }, [unitSelection.selectedUnits, unitPreview]);
+  }, [unitSelection.selectedUnits, unitPreview, isLegendDrawerOpen]);
 
   const handleDrawerOpenChange = (open: boolean) => {
     setIsDrawerOpen(open);
@@ -50,6 +54,7 @@ export function TimeChunkViewer({
 
   const handleUnitPointerDown = (unit: TimeChunkUnit) => {
     unitSelection.handleUnitSelection(unit);
+    setIsLegendDrawerOpen(false);
   };
 
   const handleUnitPointerUp = () => {
@@ -60,11 +65,53 @@ export function TimeChunkViewer({
     ) {
       unitSelection.handleUnitSelection(unitPreview.selectedPreviewUnit);
       unitPreview.clearPreview();
+      setIsLegendDrawerOpen(false);
+    }
+  };
+
+  const handleLegendTimeframeClick = (
+    selectedUnits: SelectedTimeChunkUnits
+  ) => {
+    unitSelection.setSelectedUnits(selectedUnits);
+
+    // Scroll to the first unit of the selected timeframe
+    const firstUnit = selectedUnits[0];
+
+    if (
+      selectedUnits.length >= 2 &&
+      gridContainerRef.current &&
+      firstUnit &&
+      gridContainerRef
+    ) {
+      const targetElement = gridContainerRef.current.querySelector(
+        `[${unitIndexAttribute}="${firstUnit.index}"]`
+      );
+
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'center',
+        });
+      }
     }
   };
 
   return (
     <>
+      {/* Sticky Action Bar */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+        <div className="flex justify-end p-4">
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => setIsLegendDrawerOpen(!isLegendDrawerOpen)}
+          >
+            Legend
+          </Button>
+        </div>
+      </div>
+
       <div className="flex flex-col items-center justify-center min-h-screen p-4 pb-100 pt-20">
         {/* Header */}
         <div className="flex flex-col items-center gap-4 w-full">
@@ -73,9 +120,11 @@ export function TimeChunkViewer({
               {timeChunk.name} in {getUnitLabel(timeChunk.unit)}
             </TextH2>
           </div>
-          <TextMuted className="mb-10">
-            {formatDateForUnit(timeChunk.start, timeChunk.unit)}
-          </TextMuted>
+          <div className="flex items-center gap-4 mb-10">
+            <TextMuted>
+              {formatDateForUnit(timeChunk.start, timeChunk.unit)}
+            </TextMuted>
+          </div>
         </div>
         {/* Grid */}
         <TimeChunkGrid
@@ -92,13 +141,19 @@ export function TimeChunkViewer({
           {formatDateForUnit(timeChunk.end, timeChunk.unit)}
         </TextMuted>
       </div>
-      <TimeChunkViewerDrawer
+      <TimeFrameSelectDrawer
         timeChunk={timeChunk}
         selectedUnits={unitSelection.selectedUnits}
         previewUnit={unitPreview.selectedPreviewUnit}
         isDrawerOpen={isDrawerOpen}
         onDrawerOpenChange={handleDrawerOpenChange}
         onTimeChunkUpdate={onTimeChunkUpdate}
+      />
+      <TimeFrameLegendDrawer
+        timeChunk={timeChunk}
+        isDrawerOpen={isLegendDrawerOpen}
+        onDrawerOpenChange={setIsLegendDrawerOpen}
+        onTimeframeClick={handleLegendTimeframeClick}
       />
     </>
   );
