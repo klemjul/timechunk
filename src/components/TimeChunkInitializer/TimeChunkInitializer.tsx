@@ -2,6 +2,8 @@ import type { TimeChunk } from '../../models';
 import { Button } from '../ui/button';
 import { Drawer, DrawerTrigger } from '../ui/drawer';
 import { TimeChunkFormDrawer } from './TimeChunkInitializerDrawer';
+// @ts-expect-error importing an svg file
+import timechunkIcon from '../../assets/timechunk-icon-units.svg';
 
 interface TimeChunkInitializerProps {
   onTimeChunkCreate: (timeChunk: TimeChunk) => void;
@@ -16,11 +18,7 @@ export function TimeChunkInitializer({
     <div className="min-h-screen flex items-center justify-center px-10">
       <div className="flex flex-col gap-4 w-full max-w-md">
         <div className="flex justify-center mb-4">
-          <img
-            src="/timechunk-icon-units.svg"
-            alt="TimeChunk Logo"
-            className="w-24 h-24"
-          />
+          <img src={timechunkIcon} alt="TimeChunk Logo" className="w-24 h-24" />
         </div>
         <Drawer>
           <DrawerTrigger asChild>
