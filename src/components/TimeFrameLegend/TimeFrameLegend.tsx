@@ -1,5 +1,5 @@
 import type { TimeChunk, TimeFrame } from '@/models';
-import { ColorDisplay } from '@/components/ui/ColorDisplay';
+import { ColorDisplay } from '@/components/ColorDisplay/ColorDisplay';
 import { addUnitToDate, formatDateForUnit } from '@/lib/time';
 import type { SelectedTimeChunkUnits } from '@/lib/timeframe';
 

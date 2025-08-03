@@ -1,6 +1,6 @@
 import type { TimeChunk, TimeChunkUnit } from '@/models';
 import { Button } from '@/components/ui/button';
-import { ColorDisplay } from '@/components/ui/ColorDisplay';
+import { ColorDisplay } from '@/components/ColorDisplay/ColorDisplay';
 import { addUnitToDate, formatDateForUnit } from '@/lib/time';
 import {
   Drawer,
